@@ -1,18 +1,40 @@
-# MySQL audit add-on for Splunk
+# MySQL query audit add-on for Splunk
 
 This CIM compliant add-on provides field extractions, aliases and tags for
 MySQL query audit logging in both "NEW" and "OLD" XML format.
 
-## Installation
+## Install the MySQL query audit add-on
 
-For distributed environments, this add-on needs to be deployed on the search head(s) as well as on the indexer(s).
+### Single instance Splunk deployments
 
-## Configuration
+1. In Splunk, click on "Manage Apps"
+2. Click "Browse more apps", search for "MySQL query audit" and install the add-on
 
-Deploy an inputs.conf file on the MySQL server to audit:
+### Distributed Splunk deployments
+
+| Instance type | Supported | Required | Description
+|---------------|-----------|----------|------------
+| Search head   | Yes       | Yes      | Install this add-on on your search head(s) where CIM compliance of MySQL query audit logging is required
+| Indexer       | Yes       | Conditional | Install this add-on on your indexer(s) if you are using Universal Forwarder to collect the audit data. If you are using Heavy Forwarders, installation on indexers is not required.
+| Universal Forwarder | Yes | No       | This add-on is not meant to be installed on Universal Forwarders
+| Heavy Forwarder     | Yes | Yes | Install this add-on if you use a heavy forwarder to monitor MySQL query audit logging. In that case, this add-on doesn't have to be installed on indexers.
+
+The following table lists support for distributed deployment roles in a Splunk deployment:
+
+| Deployment role | Supported | Description
+|-----------------|-----------|-------------
+| Search head deployer | Yes  | Install this add-on on your search head deployer to enable CIM compliance of MySQL query audit logging on a Search Head Cluster
+| Cluster Master       | Yes  | Install this add-on on your Cluster Master to ensure correct parsing operations on all cluster peers
+| Deployment Server    | Yes  | Install this add-on on your Deployment Server to deploy it to search heads and indexers, if you are not using a clustered deployment
+
+## Configure inputs for the MySQL query audit add-on
+
+To collect the MySQL query audit logging, install a Universal Forwarder on your MySQL server(s). Refer to [Install the universal forwarder software](http://docs.splunk.com/Documentation/Forwarder/latest/Forwarder/Installtheuniversalforwardersoftware) in the Splunk documentation for further details.
+
+Then, create an inputs.conf to collect and send the data to the Splunk Platform:
 
 ```
-[monitor:///var/lib/mysql/audit.log]
+[monitor://<MYSQL_AUDIT_LOG_PATH>/audit.log]
 index = mysql
 sourcetype = mysql:audit:xml
 disabled = 0
@@ -20,7 +42,7 @@ disabled = 0
 
 ## Enable MySQL audit logging
 
-On the MySQL prompt:
+Refer to the MySQL documentation for help with installing the Audit Log plugin on your MySQL server(s). To enable audit logging in XML format you have to install the audit_log plugin and configure the proper auditing format to use:
 
 1. Install the audit plugin: `install plugin audit_log soname 'audit_log.so';`
 2. Set the audit log format: `set global audit_log_format=NEW`
