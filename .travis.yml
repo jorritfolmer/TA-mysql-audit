@@ -1,0 +1,14 @@
+language: python
+notifications:
+  email: false
+python:
+- '2.7'
+sudo: false
+before_install:
+- wget -O /tmp/splunk-appinspect.tar.gz http://dev.splunk.com/goto/appinspectdownload && pip install /tmp/splunk-appinspect.tar.gz
+script:
+- tar -zcvf /tmp/TA.tar.gz ../TA-* --exclude LICENSE --exclude .git --exclude .travis.yml
+- script -q /dev/null -c "splunk-appinspect inspect /tmp/TA.tar.gz --mode precert" | tee /tmp/log
+- grep -E "warning:[ ]+0" /tmp/log
+- grep -E "failure:[ ]+0" /tmp/log
+- grep -E "error:[ ]+0" /tmp/log

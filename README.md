@@ -1,5 +1,7 @@
 # MySQL query audit add-on for Splunk
 
+[![Travis CI build status](https://travis-ci.org/jorritfolmer/TA-mysql-audit.svg?branch=master)](https://travis-ci.org/jorritfolmer/TA-mysql-audit)
+
 This CIM compliant add-on provides field extractions, aliases and tags for
 MySQL query audit logging in both "NEW" and "OLD" XML format.
 
